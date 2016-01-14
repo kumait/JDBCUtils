@@ -24,29 +24,29 @@ The following code shows how you deal with the table using JDBCUtils
 
 ```java
 public long add(String uid, String country, int gender, int status, Date creationDate) throws SQLException {
-        String sql = "insert into `student` (`uid`, `country`, `gender`, `status`, `creation_date`) values (?, ?, ?, ?, ?)";
-        return JDBCUtils.executeInsert(connection, sql, true, uid, country, gender, status, creationDate);
-    }
+    String sql = "insert into `student` (`uid`, `country`, `gender`, `status`, `creation_date`) values (?, ?, ?, ?, ?)";
+    return JDBCUtils.executeInsert(connection, sql, true, uid, country, gender, status, creationDate);
+}
 
-    public void updateStatus(long id, int status) throws SQLException {
-        String sql = "update `student` set `status` = ? where `id` = ?";
-        JDBCUtils.executeUpdate(connection, sql, status, id);
-    }
+public void updateStatus(long id, int status) throws SQLException {
+    String sql = "update `student` set `status` = ? where `id` = ?";
+    JDBCUtils.executeUpdate(connection, sql, status, id);
+}
 
-    public JsonArray get(String uid, int status) throws SQLException {
-        String sql = "select * from `student` where `uid` = ? and `status` = ?";
-        return JDBCUtils.getJsonArray(connection, sql, uid, status);
-    }
+public JsonArray get(String uid, int status) throws SQLException {
+    String sql = "select * from `student` where `uid` = ? and `status` = ?";
+    return JDBCUtils.getJsonArray(connection, sql, uid, status);
+}
 
-    public long getCount(String uid, int status) throws Exception {
-        String sql = "select count(`id`) from `student` where `uid` = ? and `status` = ?";
-        return JDBCUtils.getSimpleObject(connection, sql, long.class, 1, uid, status);
-    }
+public long getCount(String uid, int status) throws Exception {
+    String sql = "select count(`id`) from `student` where `uid` = ? and `status` = ?";
+    return JDBCUtils.getSimpleObject(connection, sql, long.class, 1, uid, status);
+}
 
-    public void delete(long id) throws SQLException {
-        String sql = "delete from `student` where `id` = ?";
-        JDBCUtils.executeUpdate(connection, sql, id);
-    }
+public void delete(long id) throws SQLException {
+    String sql = "delete from `student` where `id` = ?";
+    JDBCUtils.executeUpdate(connection, sql, id);
+}
 ```
 
 
