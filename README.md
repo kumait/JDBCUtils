@@ -49,7 +49,9 @@ public void delete(long id) throws SQLException {
 }
 ```
 
-It is possible to get typed objects as results instead of JSON by calling methods methods such getList, getSimpleList, getObject..., you can also get results from stored procedures by calling methods with the SP suffix in their name such as getJsonArraySP, getListSP.
+It is possible to get typed objects as results instead of JSON by calling methods methods such getList, getSimpleList, getObject.
+
+You can also get results from stored procedures by calling methods with the SP suffix in their name such as getJsonArraySP, getListSP.
 
 
 
