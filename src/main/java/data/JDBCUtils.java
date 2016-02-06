@@ -68,6 +68,14 @@ public class JDBCUtils {
         return fields;
     }
 
+
+    /**
+     *
+     * @param resultSet
+     * @param cls
+     * @return a map between class field names and their corresponding column indexes in the result set
+     * @throws SQLException
+     */
     private static HashMap<Field, Integer> getFieldToResultSetMap(ResultSet resultSet, Class cls) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
         List<Field> fields = getClassFields(cls, true);
@@ -97,21 +105,6 @@ public class JDBCUtils {
         List<Field> fields = getClassFields(cls, true);
         HashMap<String, Integer> colMap = new HashMap<String, Integer>();
         HashMap<Field, Integer> fieldMap = getFieldToResultSetMap(resultSet, cls);
-
-        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            colMap.put(metaData.getColumnName(i), i);
-        }
-
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Annotation[] annotations = field.getDeclaredAnnotations();
-            Database databaseAnno = (Database) field.getAnnotation(Database.class);
-            String colName = databaseAnno != null && !databaseAnno.column().equals("?") ? databaseAnno.column() : field.getName();
-            if (colMap.containsKey(colName)) {
-                int colIndex = colMap.get(colName);
-                fieldMap.put(field, colIndex);
-            }
-        }
 
         while (resultSet.next()) {
             T t = cls.newInstance();
@@ -204,6 +197,22 @@ public class JDBCUtils {
         return result;
     }
 
+    public static int executeSP(Connection conn, String spName, Object... parameters) throws SQLException {
+        CallableStatement stmt = null;
+        int result = -1;
+        try {
+            String sql = getCallStatementSQL(spName, parameters.length);
+            stmt = conn.prepareCall(sql);
+            bindParams(stmt, parameters);
+            result = stmt.executeUpdate();
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+        return result;
+    }
+
 
     // ======= JSON ========
     public static JsonArray getJsonArray(Connection conn, String sql, Object... parameters) throws SQLException {
@@ -280,8 +289,6 @@ public class JDBCUtils {
         return list;
     }
 
-
-
     public static <T> List<T> getSimpleList(Connection conn, String sql, Class<T> cls, int columnIndex, Object... parameters) throws SQLException, InstantiationException, IllegalAccessException {
         PreparedStatement stmt = null;
         ResultSet resultSet = null;
@@ -312,23 +319,6 @@ public class JDBCUtils {
         List<T> list = getSimpleList(conn, sql, cls, columnIndex, parameters);
         return list.size() > 0 ? list.get(0) : null;
     }
-
-    public static int executeSP(Connection conn, String spName, Object... parameters) throws SQLException {
-        CallableStatement stmt = null;
-        int result = -1;
-        try {
-            String sql = getCallStatementSQL(spName, parameters.length);
-            stmt = conn.prepareCall(sql);
-            bindParams(stmt, parameters);
-            result = stmt.executeUpdate();
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
-        }
-        return result;
-    }
-
 
     public static <T> List<T> getListSP(Connection conn, String spName, Class<T> cls, Object... parameters) throws SQLException, InstantiationException, IllegalAccessException {
         CallableStatement stmt = null;
