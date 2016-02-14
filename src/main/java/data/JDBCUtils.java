@@ -17,11 +17,6 @@ import java.util.List;
  * Created by kumait on 12/1/14.
  */
 public class JDBCUtils {
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Database {
-        String column() default "?";
-    }
-
     private static Gson gson;
 
     static {
