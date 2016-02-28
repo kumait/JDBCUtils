@@ -101,6 +101,10 @@ public class JDBCUtils {
         HashMap<String, Integer> colMap = new HashMap<String, Integer>();
         HashMap<Field, Integer> fieldMap = getFieldToResultSetMap(resultSet, cls);
 
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            colMap.put(metaData.getColumnName(i), i);
+        }
+
         while (resultSet.next()) {
             T t = cls.newInstance();
             for (Field field : fields) {
