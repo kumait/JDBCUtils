@@ -3,8 +3,6 @@ package data;
 import com.google.gson.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.*;
@@ -96,23 +94,14 @@ public class JDBCUtils {
 
     private static <T> List<T> getList(ResultSet resultSet, Class<T> cls) throws SQLException, IllegalAccessException, InstantiationException {
         List<T> list = new ArrayList<T>();
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        List<Field> fields = getClassFields(cls, true);
-        HashMap<String, Integer> colMap = new HashMap<String, Integer>();
         HashMap<Field, Integer> fieldMap = getFieldToResultSetMap(resultSet, cls);
-
-        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            colMap.put(metaData.getColumnName(i), i);
-        }
 
         while (resultSet.next()) {
             T t = cls.newInstance();
-            for (Field field : fields) {
-                if (fieldMap.containsKey(field)) {
-                    int colIndex = fieldMap.get(field);
-                    Object val = resultSet.getObject(colIndex);
-                    field.set(t, val);
-                }
+            for (Field field : fieldMap.keySet()) {
+                int colIndex = fieldMap.get(field);
+                Object val = resultSet.getObject(colIndex);
+                field.set(t, val);
             }
             list.add(t);
         }
