@@ -3,8 +3,6 @@ package data;
 import com.google.gson.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.*;
@@ -78,7 +76,7 @@ public class JDBCUtils {
         HashMap<Field, Integer> fieldMap = new HashMap<Field, Integer>();
 
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            colMap.put(metaData.getColumnLabel(i), i);
+            colMap.put(metaData.getColumnName(i), i);
         }
 
         for (Field field : fields) {
@@ -96,14 +94,7 @@ public class JDBCUtils {
 
     private static <T> List<T> getList(ResultSet resultSet, Class<T> cls) throws SQLException, IllegalAccessException, InstantiationException {
         List<T> list = new ArrayList<T>();
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        List<Field> fields = getClassFields(cls, true);
-        HashMap<String, Integer> colMap = new HashMap<String, Integer>();
         HashMap<Field, Integer> fieldMap = getFieldToResultSetMap(resultSet, cls);
-
-        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            colMap.put(metaData.getColumnLabel(i), i);
-        }
 
         while (resultSet.next()) {
             T t = cls.newInstance();
@@ -132,7 +123,7 @@ public class JDBCUtils {
         ResultSetMetaData metaData = resultSet.getMetaData();
         HashMap<Integer, String> columns = new HashMap<Integer, String>();
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            columns.put(i, metaData.getColumnLabel(i));
+            columns.put(i, metaData.getColumnName(i));
         }
 
         while (resultSet.next()) {
