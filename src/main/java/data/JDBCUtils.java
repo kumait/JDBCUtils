@@ -78,7 +78,7 @@ public class JDBCUtils {
         HashMap<Field, Integer> fieldMap = new HashMap<Field, Integer>();
 
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            colMap.put(metaData.getColumnName(i), i);
+            colMap.put(metaData.getColumnLabel(i), i);
         }
 
         for (Field field : fields) {
@@ -102,17 +102,15 @@ public class JDBCUtils {
         HashMap<Field, Integer> fieldMap = getFieldToResultSetMap(resultSet, cls);
 
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            colMap.put(metaData.getColumnName(i), i);
+            colMap.put(metaData.getColumnLabel(i), i);
         }
 
         while (resultSet.next()) {
             T t = cls.newInstance();
-            for (Field field : fields) {
-                if (fieldMap.containsKey(field)) {
-                    int colIndex = fieldMap.get(field);
-                    Object val = resultSet.getObject(colIndex);
-                    field.set(t, val);
-                }
+            for (Field field : fieldMap.keySet()) {
+                int colIndex = fieldMap.get(field);
+                Object val = resultSet.getObject(colIndex);
+                field.set(t, val);
             }
             list.add(t);
         }
@@ -134,7 +132,7 @@ public class JDBCUtils {
         ResultSetMetaData metaData = resultSet.getMetaData();
         HashMap<Integer, String> columns = new HashMap<Integer, String>();
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            columns.put(i, metaData.getColumnName(i));
+            columns.put(i, metaData.getColumnLabel(i));
         }
 
         while (resultSet.next()) {
