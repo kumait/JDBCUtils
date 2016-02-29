@@ -76,7 +76,7 @@ public class JDBCUtils {
         HashMap<Field, Integer> fieldMap = new HashMap<Field, Integer>();
 
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            colMap.put(metaData.getColumnName(i), i);
+            colMap.put(metaData.getColumnLabel(i), i);
         }
 
         for (Field field : fields) {
@@ -123,7 +123,7 @@ public class JDBCUtils {
         ResultSetMetaData metaData = resultSet.getMetaData();
         HashMap<Integer, String> columns = new HashMap<Integer, String>();
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            columns.put(i, metaData.getColumnName(i));
+            columns.put(i, metaData.getColumnLabel(i));
         }
 
         while (resultSet.next()) {
